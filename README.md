@@ -95,6 +95,9 @@ Started Solr server on port 8983 (pid=20222). Happy searching!
 Solr dih example launched successfully. Direct your Web browser to http://localhost:8983/solr to visit the Solr Admin UI
 root@kali:/opt/solr-7.7.2/bin#
 ```
+#### 浏览器访问 
+
+`http://10.10.20.166:8983/solr/#/`
 
 ![](./solr-8983.jpg)
 
