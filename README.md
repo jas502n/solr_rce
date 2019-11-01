@@ -63,6 +63,8 @@ root@kali:/opt/solr-7.7.2/bin#
 
 用户在打开网站时候，再burpsuite里面会发现一个接口，可以获取所有core name的名称，方便后续遍历core name，拼接字符串,依次检测漏洞
 
+![](./core_name.jpg)
+
 `http://10.10.20.166:8983/solr/admin/cores?_=1572594549070&indexInfo=false&wt=json`
 
 简写为
