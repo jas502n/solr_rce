@@ -59,6 +59,73 @@ root@kali:/opt/solr-7.7.2/bin#
 
 到此，漏洞环境搭建完成。
 
+用户在打开网站时候，再burpsuite里面会发现一个接口，可以获取所有core name的名称，方便后续遍历core name，拼接字符串,依次检测漏洞
+
+`http://10.10.20.166:8983/solr/admin/cores?_=1572594549070&indexInfo=false&wt=json`
+
+简写为
+
+`http://10.10.20.166:8983/solr/admin/cores?indexInfo=false&wt=json`
+
+```
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 3
+  },
+  "initFailures": {},
+  "status": {
+    "atom": {
+      "name": "atom",
+      "instanceDir": "/opt/solr-7.7.2/example/example-DIH/solr/atom",
+      "dataDir": "/opt/solr-7.7.2/example/example-DIH/solr/atom/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema",
+      "startTime": "2019-11-01T07:47:08.216Z",
+      "uptime": 107753
+    },
+    "db": {
+      "name": "db",
+      "instanceDir": "/opt/solr-7.7.2/example/example-DIH/solr/db",
+      "dataDir": "/opt/solr-7.7.2/example/example-DIH/solr/db/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema",
+      "startTime": "2019-11-01T07:47:09.224Z",
+      "uptime": 106745
+    },
+    "mail": {
+      "name": "mail",
+      "instanceDir": "/opt/solr-7.7.2/example/example-DIH/solr/mail",
+      "dataDir": "/opt/solr-7.7.2/example/example-DIH/solr/mail/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema",
+      "startTime": "2019-11-01T07:47:06.695Z",
+      "uptime": 109273
+    },
+    "solr": {
+      "name": "solr",
+      "instanceDir": "/opt/solr-7.7.2/example/example-DIH/solr/solr",
+      "dataDir": "/opt/solr-7.7.2/example/example-DIH/solr/solr/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema",
+      "startTime": "2019-11-01T07:47:06.702Z",
+      "uptime": 109267
+    },
+    "tika": {
+      "name": "tika",
+      "instanceDir": "/opt/solr-7.7.2/example/example-DIH/solr/tika",
+      "dataDir": "/opt/solr-7.7.2/example/example-DIH/solr/tika/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema",
+      "startTime": "2019-11-01T07:47:03.493Z",
+      "uptime": 112475
+    }
+  }
+}
+
+```
+
+
 ## 利用Burpsuite 发包 ,开启params.resource.loader.enabled
 
 Ps: params.resource.loader.enabled 默认是false
