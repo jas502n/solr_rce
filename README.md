@@ -53,6 +53,24 @@ Content-Length: 56
 ========================================================================
 ```
 
+## 漏洞环境搭建
+
+`https://www.apache.org/dyn/closer.lua/lucene/solr/7.7.2`
+
+`https://mirrors.tuna.tsinghua.edu.cn/apache/lucene/solr/7.7.2/solr-7.7.2.zip`
+
+#### velocity.solr.resource.loader.enabled:true
+
+`/opt/solr-7.7.2/example/example-DIH/solr/atom/conf/solrconfig.xml`
+
+```
+root@kali:/opt/solr-7.7.2/example/example-DIH/solr/atom/conf# cat solrconfig.xml | grep enable
+    <enableLazyFieldLoading>true</enableLazyFieldLoading>
+    <str name="solr.resource.loader.enabled">${velocity.solr.resource.loader.enabled:true}</str>
+    <str name="params.resource.loader.enabled">${velocity.params.resource.loader.enabled:false}</str>
+root@kali:/opt/solr-7.7.2/example/example-DIH/solr/atom/conf#
+```
+
 ## 参考链接：
 
 https://gist.githubusercontent.com/s00py/a1ba36a3689fa13759ff910e179fc133/raw/fae5e663ffac0e3996fd9dbb89438310719d347a/gistfile1.txt
