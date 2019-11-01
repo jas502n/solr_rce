@@ -194,7 +194,7 @@ Content-Length: 149
 注意到 状态码是`400`，`而不是200`，出现`500`的情况可能是 异常报错。这可以作为后续编写`脚本`判断漏洞存在有辅助帮助。
 
 
-## Attack start
+## gistfile1.txt
 
 
 1. Set `params.resource.loader.enabled` as true.
