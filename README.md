@@ -1,5 +1,7 @@
 # Apache Solr RCE via Velocity template
 
+![](./Apache_Solr_RCE_via_Velocity_template.gif)
+
 ## python usage:
 
 `python solr_rce.py http://x.x.x.x:8983 command`
