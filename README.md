@@ -52,8 +52,13 @@ Content-Length: 56
      0  uid=8983(solr) gid=8983(solr) groups=8983(solr)
 ========================================================================
 ```
+## 0x01 简介
 
-## 漏洞环境搭建
+Solr是Apache Lucene项目的开源企业搜索平台。
+其主要功能包括全文检索、命中标示、分面搜索、动态聚类、数据库集成，以及富文本的处理。
+2019年10月30日，国外安全研究人员放出了一个关于solr 模板注入的exp，于是本地搭建漏洞环境复现一下。
+
+## 0x02 漏洞环境搭建
 
 `https://www.apache.org/dyn/closer.lua/lucene/solr/7.7.2`
 
@@ -70,6 +75,28 @@ root@kali:/opt/solr-7.7.2/example/example-DIH/solr/atom/conf# cat solrconfig.xml
     <str name="params.resource.loader.enabled">${velocity.params.resource.loader.enabled:false}</str>
 root@kali:/opt/solr-7.7.2/example/example-DIH/solr/atom/conf#
 ```
+#### 开启dih 示例
+
+`./solr -e dih -force`
+
+```
+root@kali:/opt/solr-7.7.2/bin# ./solr -e dih -force
+*** [WARN] *** Your open file limit is currently 1024.
+ It should be set to 65000 to avoid operational disruption.
+ If you no longer wish to see this warning, set SOLR_ULIMIT_CHECKS to false in your profile or solr.in.sh
+
+Starting up Solr on port 8983 using command:
+"/opt/solr-7.7.2/bin/solr" start -p 8983 -s "/opt/solr-7.7.2/example/example-DIH/solr" -force
+
+Waiting up to 180 seconds to see Solr running on port 8983 [\]
+Started Solr server on port 8983 (pid=20222). Happy searching!
+
+
+Solr dih example launched successfully. Direct your Web browser to http://localhost:8983/solr to visit the Solr Admin UI
+root@kali:/opt/solr-7.7.2/bin#
+```
+
+![](./solr-8983.jpg)
 
 ## 参考链接：
 
