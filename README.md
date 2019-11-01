@@ -7,10 +7,10 @@
 
 ![](./solr-rce.jpg)
 
-## poc
+## Attack start
 
 
-1.Set `params.resource.loader.enabled` as true.
+1. Set `params.resource.loader.enabled` as true.
 
 ```
 Request:
