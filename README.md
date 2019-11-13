@@ -10,6 +10,14 @@
 ![](./solr-rce.jpg)
 
 
+## getshell encode payload
+
+http://www.jackson-t.ca/runtime-exec-payloads.html
+
+`whoami`
+
+`>>> bash -c {echo,d2hvYW1p}|{base64,-d}|{bash,-i}`
+
 ## 0x01 solr简介
 
 Solr是Apache Lucene项目的开源企业搜索平台。
